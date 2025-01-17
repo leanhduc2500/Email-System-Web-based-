@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inbox</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 80%;
+      margin: 20px auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      width: 100%;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th, table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #f4f4f4;
+    }
+
+    table td a {
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    table td a:hover {
+      text-decoration: underline;
+    }
+
+    .pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      padding: 8px 16px;
+      margin: 0 4px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    .pagination a:hover {
+      background-color: #0056b3;
+    }
+
+    .pagination a.active {
+      font-weight: bold;
+      background-color: #0056b3;
+    }
+
+    .pagination a.disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .signout {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1>Inbox | <a href="/outbox">Outbox</a> | <a href="/compose">Compose Email</a></h1>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th>From</th>
+            <th>Subject</th>
+            <th>Body</th>
+            <th>Received At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% emails.forEach(email => { %>
+            <tr>
+              <td><%= email.sender_name %></td>
+              <td><a href="/email-detail/<%= email.id %>"><%= email.subject %></a></td>
+              <td><%= email.body.substring(0, 50) %>...</td>
+              <td><%= email.sent_at %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel pagination">
+      <% if (hasPrevPage) { %>
+        <a href="/inbox?page=<%= currentPage - 1 %>">Previous</a>
+      <% } else { %>
+        <a href="#" class="disabled">Previous</a>
+      <% } %>
+
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/inbox?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+      <% } %>
+
+      <% if (hasNextPage) { %>
+        <a href="/inbox?page=<%= currentPage + 1 %>">Next</a>
+      <% } else { %>
+        <a href="#" class="disabled">Next</a>
+      <% } %>
+    </div>
+
+    <div class="signout">
+      <a href="/signout">Sign Out</a>
+    </div>
+  </div>
+</body>
+</html>

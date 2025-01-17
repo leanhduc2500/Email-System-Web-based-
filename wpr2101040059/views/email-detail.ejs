@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Details</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Email Details</h1>
+      <a href="/inbox">Inbox</a> | <a href="/outbox">Outbox</a> | <a href="/signout">Sign Out</a>
+    </header>
+
+    <div class="email-details">
+      <p><strong>From:</strong> <%= email.sender_name || 'Unknown' %> (<%= email.sender_email || 'N/A' %>)</p>
+      <p><strong>To:</strong> <%= email.receiver_name || 'Unknown' %> (<%= email.receiver_email || 'N/A' %>)</p>
+      <p><strong>Subject:</strong> <%= email.subject || "(no subject)" %></p>
+      <p><strong>Sent At:</strong> <%= email.sent_at || 'Unknown' %></p>
+
+      <hr>
+
+      <p><%= email.body || "(no content)" %></p>
+
+      <% if (email.attachment) { %>
+        <p><strong>Attachment:</strong> <a href="/uploads/<%= email.attachment %>" download><%= email.attachment %></a></p>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

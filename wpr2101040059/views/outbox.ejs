@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outbox</title>
+  
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Center container */
+    body, html {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+    }
+
+    /* Main container styling */
+    .container {
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    /* Header panel */
+    .header-panel {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    /* Welcome text styling */
+    .header p {
+      margin-top: 10px;
+      font-size: 1.1em;
+      color: #333;
+    }
+
+    /* Sign-out link styling */
+    .header-panel a[href="/signout"] {
+      position: absolute;
+      bottom: 10px;
+      left: 15px;
+      color: #d9534f;
+      text-decoration: none;
+      font-size: 0.9em;
+    }
+
+    .header-panel a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      color: #333;
+    }
+
+    h1 a {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 0.9em;
+    }
+
+    h1 a:hover {
+      text-decoration: underline;
+    }
+
+    /* Table panel */
+    .table-panel {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      color: #333;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    td a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    td a:hover {
+      text-decoration: underline;
+    }
+
+    /* Button styling */
+    button {
+      margin-top: 15px;
+      padding: 10px 15px;
+      font-size: 1em;
+      color: #fff;
+      background-color: #d9534f;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c9302c;
+    }
+
+    /* Pagination styling */
+    .pagination {
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      color: #007bff;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    .pagination a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-panel">
+      <h1><a href="/inbox">Inbox</a> | Outbox | <a href="/compose">Compose Email</a></h1>
+      <a href="/signout">Sign Out</a>
+    </div>
+
+    <div class="header">
+      <p>Welcome, <%= userName %></p>
+    </div>
+
+    <div class="table-panel">
+      <form id="outbox-form">
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" onclick="toggleAllCheckboxes(this)"></th>
+              <th>Recipient</th>
+              <th>Subject</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (emails && emails.length > 0) { %>
+              <% emails.forEach(email => { %>
+                <tr>
+                  <td><input type="checkbox" class="email-checkbox" value="<%= email.id %>"></td>
+                  <td><%= email.recipient_name %></td>
+                  <td><a href="/email-detail/<%= email.id %>"><%= email.subject || '(no subject)' %></a></td>
+                  <td><%= email.sent_at %></td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td colspan="4">No emails in your outbox.</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </form>
+
+      <button onclick="deleteSelectedEmails()">Delete Selected</button>
+      
+      <div class="pagination">
+        <% if (hasPrevPage) { %>
+          <a href="/outbox?page=<%= currentPage - 1 %>">Previous</a>
+        <% } %>
+
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <a href="/outbox?page=<%= i %>" <%= i === currentPage ? 'style="font-weight: bold;"' : '' %>><%= i %></a>
+        <% } %>
+
+        <% if (hasNextPage) { %>
+          <a href="/outbox?page=<%= currentPage + 1 %>">Next</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
